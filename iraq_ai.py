@@ -71,6 +71,11 @@ def display_arabic(text):
         return text
 
 
+# UPDATE_CHECKER_GITHUB_V1
+APP_VERSION = "1.0.0"
+GITHUB_RELEASE_API = "https://api.github.com/repos/Mortada31/iraq-ai/releases/latest"
+GITHUB_RELEASES_PAGE = "https://github.com/Mortada31/iraq-ai/releases/latest"
+
 MODEL = "iraq-ai"
 OLLAMA_URL = "http://127.0.0.1:11437/api/chat"
 REQUEST_TIMEOUT = 240
@@ -262,6 +267,48 @@ class IraqAIApp:
         self.build_layout()
         self.render_history()
         self.entry.focus_set()
+        self.check_for_updates_async()
+
+    # UPDATE_CHECKER_GITHUB_V1
+    def check_for_updates_async(self):
+        threading.Thread(target=self._check_for_updates, daemon=True).start()
+
+    def _check_for_updates(self):
+        import urllib.request
+
+        try:
+            request = urllib.request.Request(
+                GITHUB_RELEASE_API,
+                headers={"User-Agent": "IRAQ-AI-Updater"},
+            )
+            with urllib.request.urlopen(request, timeout=8) as response:
+                release = json.loads(response.read().decode("utf-8"))
+
+            latest = str(release.get("tag_name", "")).strip().lstrip("vV")
+            def version_key(value):
+                parts = value.split(".")
+                if len(parts) != 3 or not all(part.isdigit() for part in parts):
+                    return None
+                return tuple(int(part) for part in parts)
+
+            current_key = version_key(APP_VERSION)
+            latest_key = version_key(latest)
+            if current_key and latest_key and latest_key > current_key:
+                release_url = release.get("html_url") or GITHUB_RELEASES_PAGE
+                self.root.after(
+                    0, lambda: self._show_update_notice(latest, release_url)
+                )
+        except Exception as exc:
+            print("Update check unavailable:", exc)
+
+    def _show_update_notice(self, latest, release_url):
+        if messagebox.askyesno(
+            "IRAQ AI Update",
+            f"A new version ({latest}) is available. Open the release page?",
+            parent=self.root,
+        ):
+            import webbrowser
+            webbrowser.open(release_url)
 
     def build_layout(self):
         # IRAQ_AI_FULL_WINDOW_BACKGROUND
