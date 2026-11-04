@@ -1,0 +1,50 @@
+﻿__pycache__/
+*.py[cod]
+*.bak
+*.backup*
+*.before_*
+*.failed_*
+*_backup*.py
+*_STABLE_BACKUP.py
+build/
+dist/
+dist-*/
+installer_output/
+release-dist/
+release-full/
+chat_history.json
+chat_history*.json
+iraq_ai_stdout.txt
+iraq_ai_stderr.txt
+.env
+.venv/
+venv/
+OllamaModels/
+Ollama/
+
+# Backup and temporary source files
+*.bak
+*.backup*
+*.before_*
+*.final_background_backup
+*.full_background_backup
+iraq_ai_before_build.py
+chat_layout_source.txt
+functions_fix.txt
+
+# Build output
+build/
+dist/
+dist-*/
+installer_output/
+release-dist/
+release-full/
+__pycache__/
+
+# Private conversation data
+chat_history.json
+chat_history*.json
+
+# Local runtime and model
+Ollama/
+OllamaModels/
